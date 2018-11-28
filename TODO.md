@@ -5,7 +5,7 @@
     - [ ] mirror [RDVI GUI-Prototype](https://gitlab.com/ignaciochg/rdvi-gui-prototype) to GitHub (OPTIONAL)
     - [ ] rename main.html to index.html
     - [ ] merge RDVI GUI-Prototype-Home to  RDVI Prototype
-- [x] Statics Site
+- [x] Static Site
     - [X] RDVI Site Prototype
 - [ ] Graph
     - [ ] Static Settings
