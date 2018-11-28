@@ -1,5 +1,17 @@
 
-//function that will output two numbers 
+//function that will output two numbers:
+// 	min of the graph
+//	max of the graph
+//	
+// valus should be:
+//	min = min(min(dps),limitLow)
+//	max = max(max(dps),limitHi) 
+//
+//
+//
+//
+//
+
 
 var arr = [
         { x: 10, y: 71 },
@@ -14,12 +26,20 @@ var arr = [
  ]
 var min
 var max
-var lookAtLast = 200
+
+//number of values to compare, for efficentcy
+var lookAtLast = 200;
+
 var limitMin
 var limitMax
- def fas;lkdfjas(){
-        asljf
-        asfkljasdf
-        asdflasdf
+ function graphYBoundaries(){
+	/*
 
+	/////CODE/////
+
+	*/
+
+
+	min = ;
+	max = ;
  }
