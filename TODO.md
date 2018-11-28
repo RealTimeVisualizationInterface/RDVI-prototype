@@ -1,10 +1,11 @@
 
 
 - [ ] RDVI API
-- [ ] Merge RDVI GUI-Prototype-Home to  RDVI Prototype
-    - [ ] mirror [RDVI GUI-Prototype](https://gitlab.com/ignaciochg/rdvi-gui-prototype) to GitHub (OPTIONAL)
+- [ ] index.html Home
     - [ ] rename main.html to index.html
-    - [ ] merge RDVI GUI-Prototype-Home to  RDVI Prototype
+    - [ ] Merge RDVI GUI-Prototype-Home to  RDVI Prototype
+        - [ ] mirror [RDVI GUI-Prototype](https://gitlab.com/ignaciochg/rdvi-gui-prototype) to GitHub (OPTIONAL)
+        - [ ] merge RDVI GUI-Prototype-Home to  RDVI Prototype index.html
 - [x] Static Site
     - [X] RDVI Site Prototype
 - [ ] Graph
