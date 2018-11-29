@@ -24,21 +24,25 @@ var arr = [
         { x: 80, y: 34 },
         { x: 90, y: 14 }
  ]
-var min = 9999
-var max = 0
+var min
+var max
 
 //number of values to compare, for efficentcy
 var lookAtLast = 200;
 
+//Limits of the vertical window size
 var limitMin
 var limitMax
+
+//Set the min and max variables used to size the vertical window size
+//Uses values in the array 'arr' to do so
  function graphYBoundaries(){
-	/*
-
-	/////CODE/////
-
-	*/
+	//Variables
+        var tempMin = 9999
+        var tempMax = 0
         var numValues = 0
+
+        //Set the number of values to show based on arr size and lookAtLast limiter
         if(lookAtLast < arr.length)
         {
                 numValues = lookAtLast
@@ -47,15 +51,35 @@ var limitMax
         {
                 numValues = arr.length
         }
+
+        //The Crunchenator
+        //Will loop through all values of the arr up to the limit, setting a temporary
+        //min and max and update for every entry
         for(i = 0; i < numValues; i++)
         {
-                if(arr[i].y > max)
+                //Check and set the maximum
+                if(arr[i].y > tempMax)
                 {
-                        max = arr[i].y
+                        tempMax = arr[i].y
                 }
-                if(arr[i].y < min)
+                //Check and set the minimum
+                if(arr[i].y < tempMin)
                 {
-                        min = arr[i].y
+                        tempMin = arr[i].y
                 }
         }
+
+        //If the max or min is outside of the limiter, then set to that limit
+        //Will cutoff extreme outliers depending on limits
+        if(tempMax > limitMax)
+        {
+                tempMax = limitMax
+        }
+        if(tempMin < limitMin)
+        {
+                tempMin = limitMin
+        }
+
+        min = tempMin
+        max = tempMax
  }
