@@ -97,3 +97,9 @@ body, html{
    border: 1px solid #ccc;
    border-top: none;
 }
+
+
+
+.c3-region.regionGood {
+  fill: green;
+}
