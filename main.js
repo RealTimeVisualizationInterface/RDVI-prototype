@@ -28,6 +28,8 @@ columns: [
 
 
 //Graph configuration settings variables //one for each data point
+var dateParseFormat = '%Y-%m-%d %H:%M:%S';
+var dateOutputFormat = '%H:%M:%S';
 var graphs = []; //place to store graphs
 var yAxisTopLimit = []; // float 
 var yAxisBotLimit = []; // float
@@ -38,7 +40,7 @@ var graphBindIDs = [
                      "#GRAPH2",
                      "#GRAPH3"               
                   ];
-
+ 
 
 /*
 addOneDP()
@@ -48,33 +50,69 @@ ARG in pointValue: y value aka data
 ARG in pointTime : x value aka time, in string date format
 Return Void
 */
-function addOneDP(graphIndex, pointValue, pointTime = ""){
-   var xValueDate;
+function addOneDP(graphIndex, pointValue , pointTime = ""){
+   var formatCorrect = false;
    if(pointTime === ""){
-      xValueDate = Date();
+      dpXValues[graphIndex].push(getCurrentTime());
+      formatCorrect = true;
    }
-   else{
-      xValueDate = new Date(Date.Parse(pointTime));
+   else{//make sure format is correct before inserting
+      formatCorrect = checkDateFormat(pointTime);
+      if(formatCorrect){
+         dpXValues[graphIndex].push(pointValue);
+      }
    }
-
-   ///// CODE /////
-
+   if(formatCorrect){
+      dpYValues[graphIndex].push(pointValue);
+   }
 }
 
-function getCurrentTime(){
-   return  
-   var y = getFullYear().toString();
-   var mo = (getMonth()+1).toString();// zero indexed
-   var d = getDate().toString();
-   var h =  getHours().toString();
-   var mi = getMinutes().toString();
-   var s = getSeconds().toString();
-   return y+"-"+mo+"-"+d+" "+h+":"+mi+":"+s;
+function getCurrentTime(){ 
+   var now = new Date();
+   var y = now.getFullYear().toString();
+   var mo = (now.getMonth()+1).toString();// zero indexed
+   var d = now.getDate().toString();
+   var h =  now.getHours().toString();
+   var mi = now.getMinutes().toString();
+   var s = now.getSeconds().toString();
+   var date = y+"-"+mo+"-"+d+" "+h+":"+mi+":"+s;
+   console.log(date);
+   return date;
    // %Y-%m-%d %H:%M:%S
    // match input format
 }
 
 function getConfiguration(){
+
+   //manual values
+   machineName = "Machine 1";
+   dpNames.push("Voltage");//dp0
+   upperLimits.push(5.2); //dp0
+   lowerLimits.push(4.8);//dp0
+
+
+   dpYValues.push([machineName]);//dp0
+   dpXValues.push(["Time"]);//dp0
+
+
+   // dpYValues.push([machineName,3.5,3.6,3.8,5.0,4.9,5.12,3.0,2.5,5.1]);//dp0
+   // dpXValues.push(["Time",
+   //                   "2018-11-30 19:32:00",
+   //                   "2018-11-30 19:33:00",
+   //                   "2018-11-30 19:34:00",
+   //                   "2018-11-30 19:35:00",
+   //                   "2018-11-30 19:36:00",
+   //                   "2018-11-30 19:37:00",
+   //                   "2018-11-30 19:38:00",
+   //                   "2018-11-30 19:39:00",
+   //                   "2018-11-30 19:40:00"]);//dp0
+
+   dpRefreshRate.push(1000);//for dp0
+
+   xAxisLastTimeToShow.push(getCurrentTime());//"2018-11-30 19:36:00");//sp0, valuees before this will not show anymore
+   //xAxisLastTimeToShow.push(new Date(getCurrentTime()));//sp0, valuees before this will not show anymore
+
+   //should be omplemented
    //call api get data
    /*
       call: get quantity and names of data points  
@@ -101,9 +139,12 @@ function createGraph(index){//all information has to be available before calling
 
    return chart = c3.generate({
       bindto: graphBindIDs[index],
+      transition: {
+         duration: 10
+      },
       data: {
          x: 'Time',
-         
+         xFormat: dateParseFormat,//how to parse x 
          columns: [
             dpXValues[index],
             dpYValues[index],
@@ -115,13 +156,10 @@ function createGraph(index){//all information has to be available before calling
             type: 'timeseries',
             label: dpNames[index],
             localtime: false,
-            //xFormat: '%Y-%m-%d %H:%M:%S',//how to parse x 
             tick: {
-                format: '%H:%M:%S',//how to display x
-                fit: true,
-                count: 5,
-
-
+                format: dateOutputFormat,//how to display x
+                fit: false,
+                count: 10
             },
             min: xAxisLastTimeToShow[index]
 
@@ -135,7 +173,7 @@ function createGraph(index){//all information has to be available before calling
          ],
       grid: {
          y: {
-            show: true,
+            show: false,
             lines: [
                {value: lowerLimits[index], text: 'Lower Limit', position: 'middle'},
                {value: upperLimits[index], text: 'Upper Limit', position: 'middle'},
@@ -164,54 +202,59 @@ chart.axis.min({
 
 
 
-
+function reloadGraph(index){
+   // recalculate min and max for y axis
+   //update min max in graph
+   graphs[index].load({
+      columns: [
+         dpXValues[index],
+         dpYValues[index],
+      ]
+    });
+}
 
 function updateGraph(index){//add value to graph
    console.log("updating graph")
    /*
 
-      for every value in 
+      for every value in gotten from api call add point 
 
 
    */
 
-dpYValues[0].push(5.1);//dp0
-dpXValues[0].push(new Date(new Date("October 13, 2014 11:13:00").getMilliseconds() + 1000));//dp0
-console.log(dpXValues[0]);
+//console.log(dpXValues[0]);
+   for (i = 0; i < (Math.floor(Math.random() * 9) + 1); i++){ //random number of points to generate
+      addOneDP(index,((Math.random() * 2.0) + 4.0));
+   } 
+
+   reloadGraph(index);
+
+}
+function setRange(index){
+   //time + refrash rate
+   //display refresh rate 
+   chart.axis.min({
+      x: xAxisLastTimeToShow[index]
+   });
+
+   xAxisLastTimeToShow[index] = getCurrentTime();
 }
 
 
 
 
 
-//manual values
-machineName = "Machine 1";
-dpNames.push("Voltage");//dp0
-upperLimits.push(5.2); //dp0
-lowerLimits.push(4.8);//dp0
-
-
-// dpYValues.push([machineName]);//dp0
-// dpXValues.push(["Time"]);//dp0
-
-
-dpYValues.push([machineName,3.5,3.6,3.8,5.0,4.9,5.12,3.0,2.5,5.1]);//dp0
-dpXValues.push(["Time",
-                  new Date("October 13, 2014 11:13:00"),
-                  new Date("October 13, 2014 11:14:00"),
-                  new Date("October 13, 2014 11:15:00"),
-                  new Date("October 13, 2014 11:16:00"),
-                  new Date("October 13, 2014 11:17:00"),
-                  new Date("October 13, 2014 11:18:00"),
-                  new Date("October 13, 2014 11:19:00"),
-                  new Date("October 13, 2014 11:20:00"),
-                  new Date("October 13, 2014 11:21:00")]);//dp0
-
-dpRefreshRate.push(1000);//for dp0
-
-xAxisLastTimeToShow.push(new Date("October 13, 2014 11:18:00"));//sp0, valuees before this will not show anymore
-//xAxisLastTimeToShow.push(new Date(getCurrentTime()));//sp0, valuees before this will not show anymore
-
+/*
+#####################################################################################
+#####################################################################################
+#####################################################################################
+##########################                           ################################
+##########################          MAIN             ################################
+##########################                           ################################
+#####################################################################################
+#####################################################################################
+#####################################################################################
+*/
 
 
 
@@ -223,7 +266,20 @@ code that will settup plage layout depending on how many graphs we have
 for (let index = 0; index < dpNames.length; ++index) {// make everything
 
    graphs.push(createGraph(index));
-   setInterval(updateGraph(index),dpRefreshRate[index]);
+   console.log(dpXValues[0]);
+   setInterval(function(){ updateGraph(index); }, dpRefreshRate[index]);
+   //setInterval(function(){ setRange(index); }, dpRefreshRate[index]);
+
 }
 
 
+// setTimeout(function () {
+//     graphs[0].flow({
+//         columns: [
+//             ['Time', getCurrentTime(), getCurrentTime()],
+//             ['Machine 1', 5.1, 4.9],
+
+//         ],
+//         duration: 1500,       
+//     });
+// }, 1000);
